@@ -23,7 +23,9 @@
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
-        .hidden-section { display: none; }
+        
+        /* CRITICAL FIX: Force hide with !important */
+        .hidden-section { display: none !important; }
         
         /* Custom Checkbox Styling */
         .custom-checkbox:checked + div { border-color: #4F46E5; background-color: #EEF2FF; }
@@ -71,14 +73,14 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
+    <!-- Main Content Area -->
     <main class="flex-grow p-4 md:p-6 max-w-7xl mx-auto w-full flex items-center justify-center min-h-[80vh]">
         
-        <!-- PAGE 1: LOGIN / ENTRY -->
+        <!-- ================= PAGE 1: LOGIN (VISIBLE BY DEFAULT) ================= -->
         <section id="page-login" class="w-full max-w-md glass-panel p-8 fade-in">
             <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
-                <p class="text-gray-500">Let's identify you to start your financial journey.</p>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome</h2>
+                <p class="text-gray-500">Let's get started with your basic details.</p>
             </div>
             <form onsubmit="handleLogin(event)" class="space-y-5">
                 <div>
@@ -110,7 +112,7 @@
             </form>
         </section>
 
-        <!-- PAGE 2: FINANCIAL INPUTS (Scrollable & Editable) -->
+        <!-- ================= PAGE 2: FINANCIALS (HIDDEN BY DEFAULT) ================= -->
         <section id="page-financials" class="hidden-section w-full max-w-5xl fade-in flex flex-col h-[calc(100vh-100px)]">
             
             <!-- Header & Edit Toggle -->
@@ -249,7 +251,7 @@
                                             <h4 class="font-bold text-gray-800">Retirement Corpus</h4>
                                             <p class="text-xs text-gray-500 mb-2">Avg Target: ₹2Cr</p>
                                             <div class="grid grid-cols-2 gap-2 opacity-0 pointer-events-none transition-opacity duration-300 ms-retire-inputs">
-                                                <div><label class="text-[10px] uppercase text-gray-400">Amount ()</label><input type="number" id="val-retire" value="20000000" readonly class="w-full text-sm p-1 border rounded bg-gray-50"></div>
+                                                <div><label class="text-[10px] uppercase text-gray-400">Amount (₹)</label><input type="number" id="val-retire" value="20000000" readonly class="w-full text-sm p-1 border rounded bg-gray-50"></div>
                                                 <div><label class="text-[10px] uppercase text-gray-400">In (Years)</label><input type="number" id="yr-retire" value="25" readonly class="w-full text-sm p-1 border rounded bg-gray-50"></div>
                                             </div>
                                         </div>
@@ -269,7 +271,7 @@
             </div>
         </section>
 
-        <!-- PAGE 3: SUMMARY DASHBOARD -->
+        <!-- ================= PAGE 3: SUMMARY (HIDDEN BY DEFAULT) ================= -->
         <section id="page-summary" class="hidden-section w-full max-w-6xl fade-in space-y-8 pb-10">
             <div class="glass-panel p-8 flex flex-col md:flex-row justify-between items-center bg-gradient-to-r from-indigo-50 to-white border-l-8 border-indigo-600">
                 <div>
@@ -368,7 +370,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        // ️ REPLACE WITH YOUR ACTUAL FIREBASE CONFIG ⚠️
+        // ⚠️ REPLACE WITH YOUR ACTUAL FIREBASE CONFIG ️
         const firebaseConfig = {
             const firebaseConfig = {
             apiKey: "AIzaSyB2X_QYodQDt-huUpHDxuDg7K2ADPuNnSk",
@@ -418,7 +420,9 @@
         let isEditMode = false; 
 
         function showSection(id) {
+            // Hide ALL sections first
             document.querySelectorAll('section').forEach(el => el.classList.add('hidden-section'));
+            // Show ONLY the requested one
             document.getElementById(id).classList.remove('hidden-section');
             window.scrollTo(0,0);
         }
@@ -434,11 +438,11 @@
             isEditMode = false; 
             updateEditModeUI(false);
             
+            // Switch to Page 2
             showSection('page-financials');
         }
 
         function resetApp() { 
-            // Clear form fields if needed, or just go back to login
             showSection('page-login'); 
         }
 
@@ -451,6 +455,7 @@
         function updateEditModeUI(active) {
             const btnText = document.getElementById('editBtnText');
             const btnIcon = document.querySelector('#editToggleBtn i');
+            // Only select inputs inside page-financials
             const allInputs = document.querySelectorAll('#page-financials input, #page-financials select');
 
             if (active) {
