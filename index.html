@@ -59,6 +59,8 @@
     <div class="blob two"></div>
     <div class="blob three"></div>
   </div>
+  
+  <!-- Navbar -->
   <header class="sticky top-0 z-20 border-b border-gray-100 bg-white/80 backdrop-blur">
     <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
       <h1 class="text-2xl md:text-3xl font-bold cursor-pointer flex items-center gap-2" onclick="resetApp()">
@@ -75,7 +77,9 @@
   </header>
 
   <main class="max-w-6xl mx-auto px-4 py-8">
-    <section id="page-entry" class="panel p-6 md:p-8 max-w-xl mx-auto">
+    
+    <!-- PAGE 1: ENTRY -->
+    <section id="page-entry" class="panel p-6 md:p-8 max-w-xl mx-auto fade-in">
       <h2 class="text-2xl font-bold mb-2">Start your loan-free planning journey</h2>
       <p class="text-sm text-gray-500 mb-6">Please enter your basic profile details.</p>
       <form id="entryForm" class="space-y-4">
@@ -104,10 +108,11 @@
             <option value="married">Married</option>
           </select>
         </div>
-        <button class="w-full bg-gradient-to-r from-indigo-600 to-pink-600 text-white py-3 rounded-xl font-semibold">Continue</button>
+        <button class="w-full bg-gradient-to-r from-indigo-600 to-pink-600 text-white py-3 rounded-xl font-semibold hover:opacity-90 transition">Continue</button>
       </form>
     </section>
 
+    <!-- PAGE 2: FINANCIALS -->
     <section id="page-financial" class="hidden-page space-y-6">
       <div class="panel p-6">
         <h2 class="text-2xl font-bold">Financial Inputs (INR)</h2>
@@ -134,9 +139,10 @@
         </div>
       </div>
 
-      <button onclick="generatePlan()" class="w-full bg-gray-900 hover:bg-black text-white rounded-xl py-3 font-semibold">Generate AI Suggestions</button>
+      <button onclick="generatePlan()" class="w-full bg-gray-900 hover:bg-black text-white rounded-xl py-3 font-semibold transition">Generate AI Suggestions</button>
     </section>
 
+    <!-- PAGE 3: SUMMARY -->
     <section id="page-summary" class="hidden-page space-y-6">
       <div class="panel p-6 flex flex-col md:flex-row justify-between gap-4 items-center">
         <div>
@@ -188,11 +194,12 @@
           <span>Do you want to discuss with us for next steps and help you reduce loan dependence?</span>
         </label>
         <div class="mt-4">
-          <button onclick="savePlan()" id="savePlanBtn" class="bg-gradient-to-r from-pink-500 to-indigo-600 px-8 py-3 rounded-full font-semibold">Save Plan</button>
+          <button onclick="savePlan()" id="savePlanBtn" class="bg-gradient-to-r from-pink-500 to-indigo-600 px-8 py-3 rounded-full font-semibold hover:opacity-90 transition">Save Plan</button>
         </div>
       </div>
     </section>
 
+    <!-- PAGE 4: LOCAL RECORDS -->
     <section id="page-records" class="hidden-page panel p-6">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-bold">Saved Planner Data (Local Snapshot)</h2>
@@ -210,6 +217,7 @@
       </div>
     </section>
 
+    <!-- PAGE 5: ADMIN LOGIN -->
     <section id="page-admin-login" class="hidden-page panel p-6 max-w-md mx-auto">
       <h2 class="text-xl font-bold mb-2">Admin Login</h2>
       <p class="text-sm text-gray-500 mb-4">Login to view user entries stored in Firebase.</p>
@@ -222,10 +230,11 @@
           <label class="text-xs uppercase text-gray-500 font-semibold">Password</label>
           <input id="adminPass" required type="password" class="mt-1 w-full border rounded-lg p-3" placeholder="••••••" />
         </div>
-        <button class="w-full bg-indigo-600 text-white rounded-lg py-2 font-semibold">Login</button>
+        <button class="w-full bg-indigo-600 text-white rounded-lg py-2 font-semibold hover:bg-indigo-700 transition">Login</button>
       </form>
     </section>
 
+    <!-- PAGE 6: ADMIN DASHBOARD -->
     <section id="page-admin" class="hidden-page panel p-6">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-bold">Admin Dashboard (Firebase)</h2>
@@ -245,6 +254,7 @@
     </section>
   </main>
 
+  <!-- FIREBASE MODULE -->
   <script type="module">
     import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
@@ -295,6 +305,7 @@
     };
   </script>
 
+  <!-- APP LOGIC -->
   <script>
     const ADMIN_USERNAME = 'admin';
     const ADMIN_PASSWORD = 'unloan1083';
@@ -337,8 +348,8 @@
     function renderMilestones() {
       const box = document.getElementById('milestonesBox');
       box.innerHTML = milestoneDefs.map((m) => `
-        <div class="border rounded-lg p-3">
-          <label class="font-medium text-sm inline-flex items-center gap-2"><input id="use-${m.key}" type="checkbox" checked /> ${m.name}</label>
+        <div class="border rounded-lg p-3 hover:shadow-sm transition">
+          <label class="font-medium text-sm inline-flex items-center gap-2 cursor-pointer"><input id="use-${m.key}" type="checkbox" checked /> ${m.name}</label>
           <div class="grid grid-cols-2 gap-2 mt-2">
             <input id="amt-${m.key}" type="number" min="0" value="${m.avg}" class="border rounded p-2 text-sm" />
             <input id="yr-${m.key}" type="number" min="1" value="${m.years}" class="border rounded p-2 text-sm" />
@@ -433,9 +444,9 @@
         <li>Health insurance: <b>${inr(1000000 + user.dependents * 200000)}</b> family floater recommended.</li>
         <li>Suggested monthly insurance budget: <b>${inr(f.allocation.insuranceAlloc)}</b>.</li>`;
 
-      document.getElementById('shortList').innerHTML = (shortGoals.map((g) => `<li>${g.name}: ${inr(g.amount)} in ${g.years} yrs.</li>`).join('') || '<li>No short-term milestone selected.</li>') + `<li class="font-semibold text-indigo-700">Invest ${inr(f.allocation.shortAlloc)}/month in short-term debt/hybrid funds.</li>`;
+      document.getElementById('shortList').innerHTML = (shortGoals.map((g) => `<li>${g.name}: ${inr(g.amount)} in ${g.years} yrs.</li>`).join('') || '<li>No short-term milestone selected.</li>') + `<li class="font-semibold text-indigo-700 mt-2">Invest ${inr(f.allocation.shortAlloc)}/month in short-term debt/hybrid funds.</li>`;
 
-      document.getElementById('longList').innerHTML = (longGoals.map((g) => `<li>${g.name}: ${inr(g.amount)} in ${g.years} yrs.</li>`).join('') || '<li>No long-term milestone selected.</li>') + `<li class="font-semibold text-indigo-700">Invest ${inr(f.allocation.longAlloc)}/month in equity-oriented SIPs/PPF/NPS mix.</li>`;
+      document.getElementById('longList').innerHTML = (longGoals.map((g) => `<li>${g.name}: ${inr(g.amount)} in ${g.years} yrs.</li>`).join('') || '<li>No long-term milestone selected.</li>') + `<li class="font-semibold text-indigo-700 mt-2">Invest ${inr(f.allocation.longAlloc)}/month in equity-oriented SIPs/PPF/NPS mix.</li>`;
 
       const avgIndianSavingsRate = 0.30;
       const noteItems = [
@@ -566,6 +577,15 @@
       status.textContent = `Connected to Firebase. Showing ${result.data.length} records.`;
       body.innerHTML = result.data.map((r) => {
         const ms = (r.financial?.milestones || []).map((m) => m.name).join(', ') || 'None';
+        // Safe date handling
+        let dateStr = '-';
+        if (r.createdAt) {
+           dateStr = new Date(r.createdAt).toLocaleDateString('en-IN');
+        } else if (r.createdAtServer) {
+           // Fallback for server timestamp if client timestamp missing
+           dateStr = 'Just now'; 
+        }
+
         return `<tr class="border-b">
           <td class="py-2">${r.name || '-'}</td>
           <td>${r.age || '-'}</td>
@@ -575,7 +595,7 @@
           <td>${inr(r.financial?.incomeMonthly || 0)}</td>
           <td>${inr(r.financial?.surplusMonthly || 0)}</td>
           <td>${r.consult ? 'Yes' : 'No'}</td>
-          <td>${r.createdAt ? new Date(r.createdAt).toLocaleDateString('en-IN') : '-'}</td>
+          <td>${dateStr}</td>
           <td>${ms}</td>
         </tr>`;
       }).join('');
